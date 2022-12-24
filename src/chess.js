@@ -4,7 +4,8 @@ import { Chessboard } from "react-chessboard";
 
 export default function PlayRandomMoveEngine() {
     const [game, setGame] = useState(new Chess());
-
+    const [board, setBoard] = useState(Game.prototype.initializeGame())
+    conole.log(board + 'board')
     function makeAMove(move) {
         const gameCopy = { ...game };
         const result = gameCopy.move(move);
