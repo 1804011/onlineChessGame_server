@@ -1,40 +1,38 @@
 import React from 'react';
+import Dot from './Dot';
 
-const Row = ({ width, height, size, index, position, onClick }) => {
-
-    const rowStyle = { width, height, display: "flex", }
+const Row = ({ val, row, width, height, onClick, special }) => {
+    const rowStyle = {
+        width,
+        height,
+        display: "flex"
+    }
     const cellStyle = {
-        height: "100%",
-        width: width / size,
-        borderBottom: (index != size - 1) && "1px solid green",
-        borderRight: "1px solid green",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        fontSize: "200%"
+        borderBottom: "1px solid green",
+        borderRight: "1px solid green",
+        width: parseInt(width / 15),
+        height
 
-    }
-    const col = [];
-    for (let i = 0; i < size; i++) {
-        col.push(1);
+
     }
     return (
         <div style={rowStyle}>
             {
-                col.map((val, idx) =>
-                    <div
-                        style={{
-                            ...cellStyle,
-                            borderRight: (idx != size - 1) && '1px solid green'
-                        }
-                        }
-                        onClick={() => onClick(index, idx)}>
+                val?.map((value, col) =>
+                    <div style={cellStyle} onClick={() => onClick(row, col)}>
                         {
-                            (position[index * size + idx] == '3' && 'X') || (
-                                position[index * size + idx] == '2' && 'O'
-                            )
+                            (special.includes(15 * row + col) && <Dot color='firebrick' />)
+                            ||
+                            (value == 3 && <Dot />)
+                            ||
+                            (value == 2 && <Dot color='tomato' />)
                         }
-                    </div>)
+                    </div>
+
+                )
             }
         </div>
     );

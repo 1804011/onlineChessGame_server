@@ -109,76 +109,71 @@ const move = (board, idx) => {
     }
 
 }
-let bestMoves = null;
-const minimax = (board, isMaximise, depth, first = 1) => {
-    if (isDraw(board) || isWin(board))
-        return evaluate(board)
-    if (depth == 0) return evaluate(board)
 
-    let mn = 40320, mx = -40320;
+const minimax = (board, isMaximise, depth) => {
+    if (isDraw(board) || isWin(board) || depth == 0) {
+        return evaluate(board)
+    }
+
+    let mn = Infinity, mx = -Infinity;
     const size = board.length;
+
     for (let i = 0; i < size; i++) {
         const result = move(board, i);
+
         if (result != null) {
-            let way = minimax(result, 1 - isMaximise, depth - 1, 0);
-            if (first && way > mx) {
-                bestMoves = i;
-            }
+            let way = minimax(result, 1 - isMaximise, depth - 1);
             mn = Math.min(way, mn);
             mx = Math.max(way, mx);
+
+
         }
     }
-    if (first) return bestMoves;
+
     if (isMaximise) return mx;
     return mn;
+
 }
 
-const alphaBeta = (board, isMaximise, depth, alpha = -Infinity, beta = Infinity, first = 1) => {
-    if (isWin(board) || isDraw(board))
-        return evaluate(board)
-    if (depth == 0) return evaluate(board)
-    const size = board.length;
+
+const findBestMove = (board, depth = 6, isMaximise = 1) => {
+    const size = board?.length;
     if (isMaximise) {
+        let bestMove = null;
         let profit = -Infinity;
         for (let i = 0; i < size; i++) {
             const result = move(board, i);
-            if (result != null) {
-                const way = alphaBeta(result, 1 - isMaximise, depth - 1, alpha, beta, 0);
+            if (result) {
+                const way = minimax(result, 1 - isMaximise, depth - 1);
                 if (way > profit) {
                     profit = way;
-                    bestMoves = i;
+                    bestMove = i;
                 }
-                alpha = Math.max(alpha, profit);
-                if (beta <= alpha)
-                    break;
+
             }
         }
-        if (first == 1) return bestMoves;
-        return profit;
+        return bestMove;
 
     }
     else {
+        let bestMove = null;
         let profit = Infinity;
         for (let i = 0; i < size; i++) {
             const result = move(board, i);
-            if (result != null) {
-                const way = alphaBeta(result, 1 - isMaximise, depth - 1, alpha, beta, 0);
+            if (result) {
+                const way = minimax(result, 1 - isMaximise, depth - 1);
                 if (way < profit) {
                     profit = way;
-
+                    bestMove = i;
                 }
-                beta = Math.min(beta, profit);
-                if (beta <= alpha)
-                    break;
             }
         }
-        return profit;
+        return bestMove;
     }
 
-
-
 }
-// console.log(minimax('321111111', 1, 9));
-export default alphaBeta;
+
+export default findBestMove;
+
 
 

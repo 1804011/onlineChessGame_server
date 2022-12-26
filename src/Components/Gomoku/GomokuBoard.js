@@ -1,34 +1,38 @@
 import React from 'react';
 import Row from './Row';
 
-const GomokuBoard = ({ size = 3,
-    width = 210,
-    height = 210,
-    position = "111111111",
-    onClick }) => {
-    const boardStyle = {
-        width,
-        height,
-        boxSizing: "border-box"
-    }
-    const boardPosition = position.substring(0, Math.min(49, size * size));
-    const row = [];
+const GomokuBoard = ({ position = "", width = 330, height = 330, onClick, special = [] }) => {
+    let boardStatus = [];
+    for (let i = 0; i < 15; i++) {
+        let arr = [];
+        for (let j = 0; j < 15; j++) {
+            let char = parseInt(position[15 * i + j]);
+            if (isNaN(char))
+                char = 1;
+            else char = parseInt(position[15 * i + j]);
+            arr.push(char);
 
-    for (let i = 0; i < size; i++) {
-        row.push(1)
+        }
+        boardStatus.push(arr);
 
     }
+
     return (
-        <div style={boardStyle}>
+        <div style={{
+            border: "1px solid green",
+            width
+        }}>
             {
-                row.map((val, index) =>
+                boardStatus?.map((val, row) =>
                     <Row
-                        size={size}
+                        row={row}
+                        val={val}
                         width={width}
-                        index={index}
-                        height={height / size}
+                        height={height / 15}
                         onClick={onClick}
-                        position={boardPosition} />
+                        special={special}
+                    />
+
                 )
             }
         </div>
