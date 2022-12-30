@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Gomoku, { bestMoves } from './Gomoku';
+import Gomoku2 from './Gomoku2';
 import GomokuBoard from './GomokuBoard';
-
+import GameOver from '../../Media/GameOver.wav'
 const GomokuMain = () => {
     const [gomoku, setGomoku] = useState(new Gomoku());
     const [special, setSpecial] = useState(gomoku.special);
@@ -9,7 +10,7 @@ const GomokuMain = () => {
     useEffect(() => {
         if (gomoku.isWin()) {
             setSpecial([...gomoku.special]);
-            alert('Player ' + gomoku.isWin() + " win");
+            new Audio(GameOver).play();
             return;
         }
         else if (gomoku.isDraw()) {
@@ -23,20 +24,16 @@ const GomokuMain = () => {
                 setClickAble(true);
             }
         }, [100])
-
-
-
     }, [gomoku])
-    const onCellClick = (r, c) => {
-        // alert(r, c);
-        const result = gomoku.move(r, c);
 
+    const onCellClick = (r, c) => {
+        const result = gomoku.move(r, c);
         if (result) {
-            setGomoku(new Gomoku(result))
+            setGomoku(new Gomoku(result));
             setClickAble(false);
         }
-
     }
+
 
     return (
         <div style={{ margin: "48px" }}>

@@ -1,4 +1,3 @@
-
 class Gomoku {
     constructor(position = "") {
         this.boardState = [];
@@ -106,9 +105,7 @@ class Gomoku {
         return this.count === 0;
     }
     move(i, j) {
-        if (this.isWin() || this.isDraw()) return null;
         if (this.boardState[i][j] !== 1) return null;
-
         const val = (this.turn() === 0 ? 3 : 2);
         this.boardState[i][j] = val;
         this.count--;
@@ -150,8 +147,8 @@ class Gomoku {
     }
     evaluate() {
         let weight = 0;
-        if (this.isWin() === 1) return 100000000;
-        else if (this.isWin() === 2) return -100000000;
+        if (this.isWin() === 1) return 10000000;
+        else if (this.isWin() === 2) return -10000000;
         for (let i = 0; i < 15; i++) {
             for (let j = 0; j < 15; j++) {
                 let arr1 = [];
@@ -181,17 +178,18 @@ class Gomoku {
                 this.func6(a1); this.func6(a2); this.func6(a3); this.func6(a4)
             }
         }
-        return 100000000 * this.fiveInRow +
-            1000000 * this.nonFourInRow +
+        return 10000000 * this.fiveInRow +
+            200000 * this.nonFourInRow +
             10000 * this.fourInRow +
-            100 * this.threeInRow +
-            10 * this.brokenThree +
-            5 * this.twoInRow +
+            2000 * this.threeInRow +
+            500 * this.brokenThree +
+            10 * this.twoInRow +
             this.singleMark
 
 
+
     }
-    moves() {
+    moves(reverse = false) {
         this.allMoves = [];
         const dr = [0, 0, 0, 0, -2, -1, 1, 2, -1, -2, -1, -2, 1, 2, 1, 2]
         const dc = [-2, -1, 1, 2, 0, 0, 0, 0, -1, -2, 1, 2, -1, -2, 1, 2]
@@ -210,25 +208,22 @@ class Gomoku {
                     this.allMoves.push({ i, j })
             }
         }
+
+        const profit = {}
+
+        this.allMoves.forEach(({ i, j }) => {
+            const board = new Gomoku(this.toBoardString());
+            board.move(i, j);
+            profit[15 * i + j] = board.evaluate();
+        })
+        // console.log(profit);
         this.allMoves.sort((a, b) => {
-            const gomoku = new Gomoku(this.toBoardString());
-            gomoku.move(a.i, a.j);
-            const gomoku2 = new Gomoku(this.toBoardString());
-            gomoku2.move(b.i, b.j);
-            const result1 = gomoku.evaluate();
-            const result2 = gomoku2.evaluate();
-            if (result1 > result2)
-                return -1;
-            if (result1 === result2) {
-                if (Math.abs(a.i - 7) + Math.abs(a.j - 7) <= Math.abs(b.i - 7) + Math.abs(a.i - 7))
-                    return -1;
-                return 1;
-            }
-            return 1;
-
-
+            return profit[15 * b.i + b.j] - profit[15 * a.i + a.j]
         })
         return this.allMoves;
+
+
+
 
     }
 
